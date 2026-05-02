@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cream: #f9f5f0;
+    --warm-white: #fdfaf6;
+    --blush: #f0ddd6;
+    --sage: #c8d5c0;
+    --dusty-rose: #d4a5a0;
+    --lavender: #c9c2d4;
+    --charcoal: #2c2825;
+    --mid-gray: #7a7370;
+    --light-gray: #e8e3de;
+    --accent: #b8977e;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Noto Sans KR', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--warm-white);
+    color: var(--charcoal);
+    font-family: var(--font-body);
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--charcoal);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, background 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--charcoal);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s cubic-bezier(.25,.46,.45,.94), opacity 0.2s;
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9990;
+    opacity: 0.4;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 28px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    mix-blend-mode: multiply;
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--charcoal);
+    text-decoration: none;
+    font-style: italic;
+  }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid-gray);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--charcoal); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 60px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 60% 60% at 80% 20%, rgba(201,194,212,0.35) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 20% 80%, rgba(200,213,192,0.3) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 60% 60%, rgba(240,221,214,0.25) 0%, transparent 60%),
+      var(--warm-white);
+    z-index: 0;
+  }
+  .hero-number {
+    font-family: var(--font-display);
+    font-size: clamp(180px, 25vw, 320px);
+    font-weight: 300;
+    line-height: 0.85;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(44,40,37,0.08);
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    letter-spacing: -0.04em;
+    user-select: none;
+    z-index: 0;
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(56px, 9vw, 120px);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    margin-bottom: 36px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--accent); }
+  .hero-desc {
+    max-width: 400px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--mid-gray);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px;
+    right: 60px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid-gray);
+    opacity: 0;
+    animation: fadeUp 0.8s 1s forwards;
+    z-index: 1;
+  }
+  .hero-scroll::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--mid-gray);
+  }
+
+  /* ─── ABOUT ─── */
+  .about-section {
+    padding: 140px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .about-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .about-label::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  .about-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 32px;
+  }
+  .about-title em { font-style: italic; }
+  .about-text {
+    font-size: 14px;
+    line-height: 2;
+    color: var(--mid-gray);
+    margin-bottom: 16px;
+  }
+  .about-right { }
+  .career-list { list-style: none; }
+  .career-item {
+    display: flex;
+    gap: 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--light-gray);
+    align-items: baseline;
+  }
+  .career-year {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    min-width: 44px;
+  }
+  .career-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--charcoal);
+  }
+
+  /* ─── WORKS ─── */
+  .works-section {
+    padding: 40px 0 160px;
+  }
+  .section-header {
+    padding: 0 60px;
+    margin-bottom: 80px;
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+  }
+  .section-number {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--accent);
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 6vw, 80px);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  /* ─── PROJECT CARD ─── */
+  .project {
+    padding: 80px 60px;
+    border-top: 1px solid var(--light-gray);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: start;
+    max-width: 1400px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .project.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .project-left { position: sticky; top: 120px; }
+  .project-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .project-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3vw, 44px);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+  .project-title em { font-style: italic; color: var(--accent); }
+  .project-desc {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--mid-gray);
+    margin-bottom: 24px;
+  }
+  .project-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border: 1px solid var(--light-gray);
+    border-radius: 20px;
+    color: var(--mid-gray);
+    margin: 3px 3px 3px 0;
+  }
+
+  /* ─── SLIDER ─── */
+  .slider-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+  .slider-track {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(.25,.46,.45,.94);
+    will-change: transform;
+  }
+  .slide {
+    min-width: 100%;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--light-gray);
+    position: relative;
+  }
+  .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease;
+  }
+
+  .slider-wrapper {
+  width: 100%;
+  aspect-ratio: 16 / 9;   /* 💥 핵심 */
+  overflow: hidden;
+  position: relative;
+}
+
+.slider-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease;
+}
+
+.slide {
+  min-width: 100%;
+  height: 100%;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  /* 꽉 채우기 */
+}
+
+.slide:hover img { transform: scale(1.03); }
+
+.project-04 .slider-wrapper {
+  aspect-ratio: 16 / 9;
+}
+
+  /* Single image (no slider) */
+  .single-image {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--light-gray);
+  }
+  .single-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease;
+  }
+  .single-image:hover img { transform: scale(1.03); }
+
+  /* Two images side by side */
+  .double-image {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .double-image .img-wrap {
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--light-gray);
+  }
+  .double-image .img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease;
+  }
+
+  .double-image .img-wrapApp {
+    /* width: 100%; height: 100%; */
+    aspect-ratio: 1/1;
+    object-fit: over;
+    display: block;
+    transition: transform 0.6s ease;
+  }
+
+
+  .double-image .img-wrap:hover img { transform: scale(1.04); }
+
+  /* Slider controls */
+  .slider-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+  }
+  .slider-dots {
+    display: flex;
+    gap: 8px;
+  }
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--light-gray);
+    border: none;
+    cursor: none;
+    transition: background 0.3s, transform 0.3s;
+    padding: 0;
+  }
+  .dot.active {
+    background: var(--charcoal);
+    transform: scale(1.4);
+  }
+  .slider-arrows {
+    display: flex;
+    gap: 8px;
+  }
+  .slider-btn {
+    width: 40px; height: 40px;
+    border: 1px solid var(--light-gray);
+    background: transparent;
+    border-radius: 50%;
+    cursor: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--charcoal);
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .slider-track .slide {
+    aspect-ratio: 3/4;
+  }
+
+  .slider-track .slideEC {
+    aspect-ratio: 16/9;
+  }
+
+
+  .slider-btn:hover {
+    background: var(--charcoal);
+    border-color: var(--charcoal);
+    color: var(--warm-white);
+  }
+  .slider-counter {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--mid-gray);
+    letter-spacing: 0.08em;
+  }
+
+  /* Painting grid */
+  .painting-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .painting-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .paint-item {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--light-gray);
+    cursor: none;
+  }
+  .paint-item.tall { aspect-ratio: 3/4; }
+  .paint-item.wide {
+    grid-column: span 2;
+    aspect-ratio: 16/9;
+  }
+  .paint-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease;
+  }
+  .paint-item:hover img { transform: scale(1.05); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--light-gray);
+    padding: 80px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    gap: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .footer-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 5vw, 64px);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  .footer-title em { font-style: italic; color: var(--accent); }
+  .footer-sub {
+    font-size: 13px;
+    color: var(--mid-gray);
+    line-height: 1.8;
+  }
+  .footer-right {
+    text-align: right;
+  }
+  .footer-copy {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--light-gray);
+    text-transform: uppercase;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── LIGHTBOX ─── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(44,40,37,0.92);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    backdrop-filter: blur(8px);
+  }
+  .lightbox.open { opacity: 1; pointer-events: all; }
+  .lightbox img {
+    max-width: 88vw;
+    max-height: 88vh;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 30px; right: 40px;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .lightbox-close:hover { background: rgba(255,255,255,0.15); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 24px 30px; }
+    .nav-links { gap: 24px; }
+    .hero { padding: 0 30px 60px; }
+    .hero-scroll { right: 30px; }
+    .about-section, .project {
+      grid-template-columns: 1fr;
+      padding: 60px 30px;
+      gap: 48px;
+    }
+    .project-left { position: static; }
+    .section-header { padding: 0 30px; }
+    footer { padding: 60px 30px; grid-template-columns: 1fr; }
+    .footer-right { text-align: left; }
+    .painting-grid { grid-template-columns: repeat(2, 1fr); }
+    .paint-item.wide { grid-column: span 1; aspect-ratio: 1; }
+  }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .double-image { grid-template-columns: 1fr; }
+    .painting-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">✕</button>
+  <img src="" id="lightboxImg" alt="">
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo"><img src="asset/dayeon_lee_logo.svg"></a>
+  <ul class="nav-links">
+    <li><a href="#works">Works</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-number">P</div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Designer & Creator</p>
+    <h1 class="hero-title">
+      Creative<br><em>Portfolio</em>
+    </h1>
+    <p class="hero-desc">그래픽 디자인, 제품 디자인, 공간 디자인,<br>UI 디자인 그리고 회화까지.<br>다양한 매체를 넘나드는 크리에이티브 작업들.</p>
+  </div>
+  <div class="hero-scroll">Scroll to explore</div>
+</section>
+
+
+
+<!-- WORKS -->
+<section class="works-section" id="works">
+  <div class="section-header">
+    <span class="section-number">—</span>
+    <h2 class="section-title">Selected Works</h2>
+  </div>
+
+  <!-- 01 Calendar -->
+  <div class="project" data-project>
+    <div class="project-left">
+      <p class="project-num">01 / 07</p>
+      <h3 class="project-title">Calendar</h3>
+      <p class="project-desc">color ver.과 pattern ver. 두 가지 버전의 2026년 캘린더 제작</p>
+      <span class="project-tag">Graphic Design</span>
+      <span class="project-tag">Print</span>
+      <span class="project-tag">Calendar</span>
+    </div>
+    <div class="project-right">
+      <div class="slider-wrapper" data-slider>
+        <div class="slider-track">
+          <div class="slide"><img src="asset/cal-04.png" alt="Calendar color ver. - full view"></div>
+          <div class="slide"><img src="asset/cal-03.png" alt="Calendar pattern ver. - full view"></div>
+        </div>
+      </div>
+      <div class="slider-controls">
+        <div class="slider-dots"></div>
+        <span class="slider-counter">1 / 2</span>
+        <div class="slider-arrows">
+          <button class="slider-btn" data-prev>←</button>
+          <button class="slider-btn" data-next>→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 Wristband -->
+  <div class="project" data-project>
+    <div class="project-left">
+      <p class="project-num">02 / 07</p>
+      <h3 class="project-title">Event<br><em>Wristband</em></h3>
+      <p class="project-desc">青春小樂：燦爛 (2026), 소란도란 한가위 (2024) 두 가지 행사를 위한 입장 팔찌 디자인</p>
+      <span class="project-tag">Graphic Design</span>
+      <span class="project-tag">Event</span>
+      <span class="project-tag">Brand</span>
+    </div>
+    <div class="project-right">
+      <div class="double-image">
+        <div class="img-wrap"><img src="asset/p2.jpg" alt="Event wristband - 青春小樂：燦爛 2026"></div>
+        <div class="img-wrap"><img src="asset/p1.jpg" alt="Event wristband - 소란도란 한가위 2024"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 Bookcover -->
+  <div class="project" data-project>
+    <div class="project-left">
+      <p class="project-num">03 / 07</p>
+      <h3 class="project-title">Bookcover<br><em>Redesign</em></h3>
+      <p class="project-desc">정세랑 작가의 책 '지구에서 한아뿐' 표지 리디자인. 로맨틱한 소설의 분위기를 살려 환상적이고 동화적인 느낌으로 재해석하였다.</p>
+      <span class="project-tag">Book Design</span>
+      <span class="project-tag">Illustration</span>
+      <span class="project-tag">Branding</span>
+    </div>
+    <div class="project-right">
+      <div class="slider-wrapper" data-slider>
+        <div class="slider-track">
+          <div class="slide"><img src="asset/book1.png" alt="Bookcover redesign - front cover illustration"></div>
+          <div class="slide"><img src="asset/book2.png" alt="Bookcover redesign - full spread layout"></div>
+          <div class="slide"><img src="asset/book3.png" alt="Bookcover redesign - physical book mockup"></div>
+        </div>
+      </div>
+      <div class="slider-controls">
+        <div class="slider-dots"></div>
+        <span class="slider-counter">1 / 3</span>
+        <div class="slider-arrows">
+          <button class="slider-btn" data-prev>←</button>
+          <button class="slider-btn" data-next>→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 Product Design -->
+  <div class="project" data-project>
+    <div class="project-left">
+      <p class="project-num">04 / 07</p>
+      <h3 class="project-title">Eternal<br><em>Calendar</em></h3>
+      <p class="project-desc">탁상형 자석 만년 달력을 기획하고 Rhino 3D 모델링으로 시각화하였다.</p>
+      <span class="project-tag">Product Design</span>
+      <span class="project-tag">3D Modeling</span>
+      <span class="project-tag">Research</span>
+    </div>
+    <div class="project-right">
+      <div class="slider-wrapper" data-slider>
+        
+        <div class="slider-track">
+          <div class="slide"><img src="asset/c1.png"></div>
+          <div class="slide"><img src="asset/c2.png"></div>
+          <div class="slide"><img src="asset/c3.png"></div>
+        </div>
+      </div>
+
+      <div class="slider-controls">
+        <div class="slider-dots"></div>
+        <span class="slider-counter">1 / 3</span>
+        <div class="slider-arrows">
+          <button class="slider-btn" data-prev>←</button>
+          <button class="slider-btn" data-next>→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 UI Design -->
+  <!-- <div class="project" data-project>
+    <div class="project-left">
+      <p class="project-num">05 / 07</p>
+      <h3 class="project-title">Emotion<br><em>Diary</em></h3>
+      <p class="project-desc">AI를 활용하여 자신의 감정을 하루하루 기록하는 감정 기록 애플리케이션 기획 및 UI 디자인</p>
+      <span class="project-tag">UI/UX Design</span>
+      <span class="project-tag">App Design</span>
+      <span class="project-tag">AI</span>
+    </div>
+    <div class="project-right">
+      <div class="double-image">
+        <div class="img-wrapApp"><img src="asset/app.png" alt="Emotion diary app - empty state calendar view"></div>
+    </div>
+  </div> -->
+  <!-- 05 UI Design -->
+<div class="project" data-project>
+  <div class="project-left">
+    <p class="project-num">05 / 07</p>
+    <h3 class="project-title">Emotion<br><em>Diary</em></h3>
+    <p class="project-desc">
+      AI를 활용하여 자신의 감정을 하루하루 기록하는 감정 기록 애플리케이션 기획 및 UI 디자인
+    </p>
+    <span class="project-tag">UI/UX Design</span>
+    <span class="project-tag">App Design</span>
+    <span class="project-tag">AI</span>
+  </div>
+
+  <div class="project-right">
+    <div class="double-image">
+      <div class="img-wrapApp">
+        <img src="asset/app.png" alt="Emotion diary app">
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- 06 Space Design -->
+  <br/>
+  <div class="project" data-project>
+    <div class="project-left">
+      <p class="project-num">06 / 07</p>
+      <h3 class="project-title">CARE-I<br><em>Glass House</em></h3>
+      <p class="project-desc">교내 공간 재구성 공모전 출품작. 식물원 온실 콘셉트의 복합 휴식 공간으로, 휴식·회의·소규모 공연이 가능한 자유로운 공간으로 구성하였다.</p>
+      <span class="project-tag">Space Design</span>
+      <span class="project-tag">Architecture</span>
+      <span class="project-tag">Contest</span>
+    </div>
+    <div class="project-right">
+      <div class="slider-wrapper" data-slider>
+        <div class="slider-track">
+          <div class="slide"><img src="asset/sd1.png" alt="Space Design1"></div>
+          <div class="slide"><img src="asset/sd2.png" alt="Space Design2"></div>
+        </div>
+      </div>
+      <div class="slider-controls">
+        <div class="slider-dots"></div>
+        <span class="slider-counter">1 / 2</span>
+        <div class="slider-arrows">
+          <button class="slider-btn" data-prev>←</button>
+          <button class="slider-btn" data-next>→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 Painting -->
+  <div class="project" data-project>
+    <div class="project-left">
+      <p class="project-num">07 / 07</p>
+      <h3 class="project-title">Painting<br><em>Works</em></h3>
+      <p class="project-desc">모델링 페이스트, 팔레트 나이프, 오일 파스텔 등 다양한 재료를 활용한 회화 작업들. 감정, 자연, 풍경, 정물, 추상 등 다양한 주제를 담았다.</p>
+      <span class="project-tag">Oil Painting</span>
+      <span class="project-tag">Pastel</span>
+      <span class="project-tag">Fine Art</span>
+    </div>
+
+    <div class="project-right">
+      <div class="slider-wrapper" data-slider>
+        <div class="slider-track">
+          <div class="slide"><img src="asset/pw1.png"></div>
+          <div class="slide"><img src="asset/pw2.png"></div>
+          <div class="slide"><img src="asset/pw3.png"></div>
+          <div class="slide"><img src="asset/pw4.png"></div>
+          <div class="slide"><img src="asset/pw5.png"></div>
+          <div class="slide"><img src="asset/pw6.png"></div>
+          <div class="slide"><img src="asset/pw7.png"></div>
+          <div class="slide"><img src="asset/pw8.png"></div>
+        </div>
+      </div>
+
+      <div class="slider-controls">
+        <div class="slider-dots"></div>
+        <span class="slider-counter">1 / 8</span>
+        <div class="slider-arrows">
+          <button class="slider-btn" data-prev>←</button>
+          <button class="slider-btn" data-next>→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- <div class="project-right">
+      <div class="slider-wrapper" data-slider>
+        <div class="slider-track">
+          <div class="slide"><img src="asset/pw1.png" alt="painting1"></div>
+          <div class="slide"><img src="asset/pw2.png" alt="painting2"></div>
+          <div class="slide"><img src="asset/pw3.png" alt="painting3"></div>
+          <div class="slide"><img src="asset/pw4.png" alt="painting4"></div>
+          <div class="slide"><img src="asset/pw5.png" alt="painting5"></div>
+          <div class="slide"><img src="asset/pw6.png" alt="painting6"></div>
+          <div class="slide"><img src="asset/pw7.png" alt="painting7"></div>
+          <div class="slide"><img src="asset/pw8.png" alt="painting8"></div>
+      </div>
+      <div class="slider-controls">
+        <div class="slider-dots"></div>
+        <span class="slider-counter">1 / 8</span>
+        <div class="slider-arrows">
+          <button class="slider-btn" data-prev>←</button>
+          <button class="slider-btn" data-next>→</button>
+        </div>
+    </div> -->
+
+
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <div class="about-left">
+    <div class="about-label">About me</div>
+    <h2 class="about-title">Design &<br><em>Create</em></h2>
+    <p class="about-text"> 캘린더 디자인, 북커버 리디자인, 제품 기획 및 디자인, UI/UX, 공간 디자인, 그리고 회화까지 다양한 영역에서 작업하고 있습니다.</p>
+    <p class="about-text">GTQ/GTQi 1급 자격증을 보유하고 있으며, 네이버 OGQ 스티커 제작 및 프론트엔드 실무 훈련을 통해 디자인과 개발을 아우르는 역량을 키우고 있습니다.</p>
+  </div>
+  <div class="about-right">
+    <ul class="career-list">
+      <li class="career-item">
+        <span class="career-year">2023</span>
+        <span class="career-desc">네이버 OGQ 스티커 승인 및 제작</span>
+      </li>
+      <li class="career-item">
+        <span class="career-year">2024</span>
+        <span class="career-desc">GTQ / GTQi 1급 취득</span>
+      </li>
+      <li class="career-item">
+        <span class="career-year">2024</span>
+        <span class="career-desc">단과대학 학생회 디자인국 수습부원</span>
+      </li>
+      <li class="career-item">
+        <span class="career-year">2026</span>
+        <span class="career-desc">단과대학 학생회 디자인국 차장</span>
+      </li>
+      <li class="career-item">
+        <span class="career-year">2026</span>
+        <span class="career-desc">멋쟁이사자처럼 프론트엔드 실무 훈련 수료</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <h2 class="footer-title">Let's<br><em>Connect</em></h2>
+    <p class="footer-sub">새로운 프로젝트나 협업에 대한 문의는<br>언제든지 환영합니다.</p>
+  </div>
+  <div class="footer-right">
+    <p class="footer-copy">© 2026 Portfolio. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  // ─── CURSOR ───
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // ─── SLIDERS ───
+  document.querySelectorAll('[data-slider]').forEach(wrapper => {
+    const track = wrapper.querySelector('.slider-track');
+    const slides = wrapper.querySelectorAll('.slide');
+    const total = slides.length;
+    let current = 0;
+
+    const controls = wrapper.parentElement.querySelector('.slider-controls');
+    if (!controls) return;
+
+    const dotsEl = controls.querySelector('.slider-dots');
+    const counter = controls.querySelector('.slider-counter');
+    const prevBtn = controls.querySelector('[data-prev]');
+    const nextBtn = controls.querySelector('[data-next]');
+
+    // Create dots
+    slides.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(d);
+    });
+
+    function goTo(n) {
+      current = (n + total) % total;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dotsEl.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+      counter.textContent = `${current + 1} / ${total}`;
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+
+    // Touch/swipe
+    let startX = 0;
+    wrapper.addEventListener('touchstart', e => startX = e.touches[0].clientX, { passive: true });
+    wrapper.addEventListener('touchend', e => {
+      const diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) goTo(diff > 0 ? current + 1 : current - 1);
+    });
+  });
+
+  // ─── LIGHTBOX ───
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+
+  document.querySelectorAll('.slide img, .img-wrap img, .paint-item img, .single-image img').forEach(img => {
+    img.style.cursor = 'none';
+    img.addEventListener('click', () => {
+      if (!img.src || img.src === window.location.href) return;
+      lightboxImg.src = img.src;
+      lightbox.classList.add('open');
+    });
+  });
+
+  document.getElementById('lightboxClose').addEventListener('click', () => lightbox.classList.remove('open'));
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') lightbox.classList.remove('open'); });
+
+  // ─── SCROLL REVEAL ───
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('[data-project]').forEach(el => observer.observe(el));
+
+  // ─── CURSOR HOVER EFFECTS ───
+  document.querySelectorAll('a, button, img, .paint-item').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform += ' scale(1.8)';
+      ring.style.opacity = '0.2';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.opacity = '0.5';
+    });
+  });
+</script>
+</body>
+</html>
